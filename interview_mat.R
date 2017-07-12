@@ -14,9 +14,7 @@ create.matrix <- function(n.interviewers=6, n.areas=6, overlap=6, n.interview.pe
 
          right.zeros <- rep.int(x=0, times=(n.interviewers*n.areas)-sum(length(left.zeros), length(interview.vec)))
 
-         
-
-         for(depth in 1:max.area.depth){
+         for(depth in 1:abs(max.area.depth)){
              result.mat <- rbind(result.mat, c(left.zeros, interview.vec, right.zeros))
          }
 
@@ -26,15 +24,32 @@ create.matrix <- function(n.interviewers=6, n.areas=6, overlap=6, n.interview.pe
     return(result.mat)
 }
 
+# Can handle shift of 0 (all overlap), symetric.
+all.equal(target=rbind(c(1,2,3,0,0,0,0,0,0),
+                       c(1,2,3,0,0,0,0,0,0),
+                       c(1,2,3,0,0,0,0,0,0)), current=create.matrix(n.interviewers=3, n.areas=3, overlap=3))
+
 # Can handle shift of 1, symetric.
-create.matrix(n.interviewers=6, n.areas=6, overlap=6)
+all.equal(target=rbind(c(1,2,3,0,0,0,0,0,0),
+                       c(0,1,2,3,0,0,0,0,0),
+                       c(0,0,1,2,3,0,0,0,0)), current=create.matrix(n.interviewers=3, n.areas=3, overlap=2))
 
-create.matrix(n.interviewers=6, n.areas=6, overlap=5)
+# Can handle shift of 2, symetric.
+all.equal(target=rbind(c(1,2,3,0,0,0,0,0,0),
+                       c(0,0,1,2,3,0,0,0,0),
+                       c(0,0,0,0,1,2,3,0,0)), current=create.matrix(n.interviewers=3, n.areas=3, overlap=1))
 
-create.matrix(n.interviewers=6, n.areas=6, overlap=4)
+# Can handle shift of 3 (no overlap), symetric.
+all.equal(target=rbind(c(1,2,3,0,0,0,0,0,0),
+                       c(0,0,0,1,2,3,0,0,0),
+                       c(0,0,0,0,0,0,1,2,3)), current=create.matrix(n.interviewers=3, n.areas=3, overlap=0))
 
+# Tests depth flag.
+all.equal(target=rbind(c(1,2,3,0,0,0,0,0,0),
+                       c(1,2,3,0,0,0,0,0,0),
+                       c(0,1,2,3,0,0,0,0,0),
+                       c(0,1,2,3,0,0,0,0,0),
+                       c(0,0,1,2,3,0,0,0,0),
+                       c(0,0,1,2,3,0,0,0,0)), current=create.matrix(n.interviewers=3, n.areas=3, overlap=2, max.area.depth=2))
 
-create.matrix(n.interviewers=6, n.areas=6, overlap=0)
-
-
-create.matrix(n.interviewers=6, n.areas=6, overlap=5, max.area.depth=2)
+#create.matrix(n.interviewers=3, n.areas=3, overlap=2, max.area.depth=2)
