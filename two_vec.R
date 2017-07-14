@@ -11,42 +11,45 @@ generate.distribution <- function(dataset=iris, category.names=c("Petal.Length",
 
     result <- make.two.vec(contin.table=contin.table, joint.vec=joint.vec)
 
-    # Need to post process to make sure .
-    ## if(sum(contin.table>0 & table(result)==0)>0){
-
-    ##     must.be.greater <- which(contin.table>0)
-
-    ##     print(table(result))
-    ##     print(table(result)[which(table(result)[must.be.greater]==0)])
-
-
-    ##     return(result)
-
-    ## }
-    else{return(result)}
+    return(result)
 
 }
 
 
 make.two.vec <- function(contin.table, joint.vec){
 
-    
+    joint.vec <- ensure.no.false.zero(joint.vec, contin.table,
+                                      samp.size=length(joint.vec))
     
     p.table <- prop.table(contin.table)
      
     p.table <- data.frame(p.table)
    
-    return(p.table[joint.vec,1:2])
+    return(p.table[joint.vec, 1:2])
     
+}
+
+ensure.no.false.zero <- function(joint.vec, contin.table, samp.size){
+
+    nonzero.indx <- which(contin.table>0)
+
+    ## If everything that is supposed to have at least one observation
+    ## has an observation, return.
+    if(sum(nonzero.indx%in%joint.vec)==length(nonzero.indx)){
+        return(joint.vec)
+    }## Otherwise resample until have such.
+    else{
+        joint.vec <- c(joint.vec, nonzero.indx[!(nonzero.indx%in%joint.vec)])
+        return(ensure.no.false.zero(sample(joint.vec, size=samp.size), contin.table, samp.size))
+    }
 }
 
 
 ### Example dataset (using iris):
 
+generate.distribution(dataset=iris, category.names=c("Petal.Length", "Species"))
 
 
-
-
-
-
+## Test case: Should only differ in the variable names.
 all.equal(target=with(data=iris, table(Petal.Length, Species))>0, current=table(generate.distribution(dataset=iris, category.names=c("Petal.Length", "Species")))>0)
+
