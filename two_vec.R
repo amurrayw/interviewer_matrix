@@ -50,8 +50,7 @@ ensure.no.false.zero <- function(joint.vec, contin.table, samp.size){
 
 
 ### Example dataset (using iris):
-
-generate.distribution(dataset=iris, category.names=c("Petal.Length", "Species"))
+generate.distribution(dataset=iris, category.names=c("Petal.Length", "Species"), sample.size=150)
 
 
 ## Test case: Should only differ in the variable names. If so, then no false zero cells.
