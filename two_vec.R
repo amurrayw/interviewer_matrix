@@ -2,7 +2,8 @@
 require(rTableICC)
 
 
-
+## Takes a dataset, a vector of variable names (used in the dataset)
+## which are to be generated, and a sample.size.
 generate.distribution <- function(dataset=iris, category.names=c("Petal.Length", "Species"), sample.size=150){
 
     contin.table <- with(data=dataset, prop.table(table(get(category.names[1]), get(category.names[2]))))
@@ -16,6 +17,7 @@ generate.distribution <- function(dataset=iris, category.names=c("Petal.Length",
 }
 
 
+## Helper function. Generates the desired two-dim. vector.
 make.two.vec <- function(contin.table, joint.vec){
 
     joint.vec <- ensure.no.false.zero(joint.vec, contin.table,
@@ -29,6 +31,8 @@ make.two.vec <- function(contin.table, joint.vec){
     
 }
 
+## Ensures that any cell that has at least 1 observation still has at
+## least one observation in the resulting vector.
 ensure.no.false.zero <- function(joint.vec, contin.table, samp.size){
 
     nonzero.indx <- which(contin.table>0)
@@ -50,6 +54,9 @@ ensure.no.false.zero <- function(joint.vec, contin.table, samp.size){
 generate.distribution(dataset=iris, category.names=c("Petal.Length", "Species"))
 
 
-## Test case: Should only differ in the variable names.
+## Test case: Should only differ in the variable names. If so, then no false zero cells.
 all.equal(target=with(data=iris, table(Petal.Length, Species))>0, current=table(generate.distribution(dataset=iris, category.names=c("Petal.Length", "Species")))>0)
 
+#prop.table(table(generate.distribution(dataset=iris, category.names=c("Petal.Length", "Species"))))
+
+#prop.table(with(data=iris, table(Petal.Length, Species)))
