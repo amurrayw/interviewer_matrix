@@ -26,7 +26,9 @@ make.two.vec <- function(contin.table, joint.vec){
     p.table <- prop.table(contin.table)
      
     p.table <- data.frame(p.table)
-   
+
+    ## Grabs only the first 2 columns as they are the two vectors of
+    ## interest.
     return(p.table[joint.vec, 1:2])
     
 }
